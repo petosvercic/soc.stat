@@ -1,103 +1,136 @@
 # 05 — Canonical Result Format (Phase 2)
 
 ## Scope
-This document defines the canonical result structure for one daily spectrum output.
-It is conceptual and content-only, not implementation.
+This document defines one canonical result schema for a daily spectrum outcome.
+It is documentation-only and does not define implementation.
 
-## Principles Anchored to FOUNDATION
-- Result describes **today**, never identity.
-- Result offers visibility, not diagnosis or correction.
-- Result keeps a quiet exit path; depth is optional.
-- Gold/Premium can increase depth, never change truth.
+## Canonical result object (keys must stay exactly as written)
 
-## Canonical Field Ordering
-1. `spectrum`
-2. `resultSymbol`
-3. `resultName`
-4. `todayOneLiner`
-5. `gentleHook`
-6. `visibleByDefault`
-7. `fogged`
-8. `unlockRules`
-9. `languageSafetyNotes`
+```yaml
+spectrum: string
+symbol: string
+name: string
+todayOneLiner: string
+gentleHook: string # optional
+visibleByDefault:
+  - spectrum
+  - symbol
+  - name
+  - todayOneLiner
+  - gentleHook # only when present
+fogged:
+  - key: string
+    teaser: string
+    unlockType: gold | premium
+    priceGold: number # optional, required when unlockType=gold
+    revealedText: string
+unlockRules:
+  gold:
+    oneOffUnlock: true
+    affectsTruth: false
+  premium:
+    expandsDepthAccess: true
+    affectsTruth: false
+```
 
-## Field Definitions
+## Field constraints
+- `spectrum`: active spectrum for today (Phase 2 baseline: Emotional).
+- `symbol`: compact recognition marker.
+- `name`: neutral today-state name, never identity label.
+- `todayOneLiner`: exactly one sentence, present-focused, non-authoritative.
+- `gentleHook` (optional): invitation to optional depth, never pressure.
+- `visibleByDefault`: always the baseline visibility set.
+- `fogged`: optional depth layers shown as muted until unlocked.
+- `unlockRules`: depth policy only; never changes core truth or personal worth.
 
-### 1) `spectrum`
-- The active spectrum label for the day (Phase 2 baseline: Emotional).
-- Short text only.
+## Fogged item shape (canonical)
+Each fogged item must follow:
+- `key`: stable internal label (e.g., `deeperShade`).
+- `teaser`: short muted preview.
+- `unlockType`: `gold` or `premium`.
+- `priceGold?`: set only when `unlockType` is `gold`.
+- `revealedText`: full text shown after unlock.
 
-### 2) `resultSymbol`
-- A compact visual token (emoji or glyph-like marker).
-- Used for immediate recognition without explanation.
+## Visibility and unlock policy
+- Default view exposes only baseline result fields.
+- Fogged layers are visible as existence, not content.
+- Gold unlock is a voluntary one-off action.
+- Premium may widen depth cadence, but cannot alter result truth.
+- Neither gold nor premium changes social value, dignity, or identity meaning.
 
-### 3) `resultName`
-- A short, neutral name for the current-day state.
-- Must avoid labels that imply diagnosis or permanent traits.
+## Language safety (doc-level section, outside result object)
+All values in the result object must obey:
+- always “today”, never permanent identity;
+- no diagnosis, no treatment framing;
+- no authoritative commands or correction pressure;
+- wording must allow a quiet exit without penalty.
 
-### 4) `todayOneLiner`
-- One sentence that frames the state as present-day context.
-- Must remain observational and non-authoritative.
+## Emotional spectrum examples (canonical keys + Slovak values)
 
-### 5) `gentleHook`
-- Optional curiosity line that opens depth without pressure.
-- Written as an invitation to look, not a command.
+### Example A
+```yaml
+spectrum: Emotional
+symbol: 🌧
+name: Tichý dážď
+todayOneLiner: Dnes sa emócie hýbu pomaly a ostávajú skôr v úzadí.
+gentleHook: Jemnejší pohľad môže odkryť, čo si pýta viac priestoru.
+visibleByDefault: [spectrum, symbol, name, todayOneLiner, gentleHook]
+fogged:
+  - key: deeperShade
+    teaser: Pod povrchom je ešte teplejší tón.
+    unlockType: gold
+    priceGold: 1
+    revealedText: Pod pokojom je aj jemná potreba blízkosti.
+  - key: hiddenPattern
+    teaser: Odpovede najprv chránili odstup.
+    unlockType: premium
+    revealedText: Najprv prichádza zadržanie, potom opatrné otvorenie.
+unlockRules:
+  gold: { oneOffUnlock: true, affectsTruth: false }
+  premium: { expandsDepthAccess: true, affectsTruth: false }
+```
 
-### 6) `visibleByDefault`
-Visible without any unlock:
-- `spectrum`
-- `resultSymbol`
-- `resultName`
-- `todayOneLiner`
-- `gentleHook` (if present)
+### Example B
+```yaml
+spectrum: Emotional
+symbol: 🌤
+name: Tenké slnko
+todayOneLiner: Dnes je prítomná ľahkosť, no zostáva aj jemný závoj.
+visibleByDefault: [spectrum, symbol, name, todayOneLiner]
+fogged:
+  - key: lookBackEcho
+    teaser: Podobný tón sa objavil aj nedávno.
+    unlockType: gold
+    priceGold: 1
+    revealedText: Oproti poslednému razu je dnes menej vnútorného napätia.
+  - key: extraSpectrumHint
+    teaser: Vedľajšie spektrum môže obraz spresniť.
+    unlockType: premium
+    revealedText: Krátky vstup do ďalšieho spektra doplní chýbajúci detail.
+unlockRules:
+  gold: { oneOffUnlock: true, affectsTruth: false }
+  premium: { expandsDepthAccess: true, affectsTruth: false }
+```
 
-### 7) `fogged`
-A list of optional depth layers, shown as present-but-muted:
-- `deeperShade` (finer nuance of today’s state)
-- `hiddenPattern` (light pattern seen in responses)
-- `lookBackEcho` (today compared with a recent moment)
-- `extraSpectrumHint` (optional pointer to another spectrum)
-
-### 8) `unlockRules`
-- **Gold unlock (one-off):** may reveal one fogged layer by user choice.
-- **Premium context:** may allow broader access cadence to fogged layers.
-- Neither gold nor premium may alter default result, social value, or dignity.
-
-### 9) `languageSafetyNotes`
-All fields must follow:
-- no diagnosis,
-- no direct evaluation of worth,
-- no identity permanence,
-- no pressure to continue.
-
-## Emotional Spectrum — Example Result Instances
-
-### Example A — "Soft Rain"
-- `spectrum`: Emotional
-- `resultSymbol`: 🌧
-- `resultName`: Soft Rain
-- `todayOneLiner`: Today feels quieter, with emotion moving in a slow line.
-- `gentleHook`: A closer look may show what is asking for a little more space.
-- `fogged`:
-  - `deeperShade`: The quiet has a warm center under the surface.
-  - `hiddenPattern`: Responses leaned toward holding back before opening.
-
-### Example B — "Thin Sun"
-- `spectrum`: Emotional
-- `resultSymbol`: 🌤
-- `resultName`: Thin Sun
-- `todayOneLiner`: Today carries lightness, with a slight veil still present.
-- `gentleHook`: One additional layer can clarify where the veil is thinnest.
-- `fogged`:
-  - `lookBackEcho`: Similar tone appeared recently, but with less tension now.
-  - `extraSpectrumHint`: A short focus in another spectrum may sharpen this view.
-
-### Example C — "Low Tide"
-- `spectrum`: Emotional
-- `resultSymbol`: 🌊
-- `resultName`: Low Tide
-- `todayOneLiner`: Today feels pulled inward, with energy staying close to shore.
-- `gentleHook`: A deeper layer may reveal what keeps the shoreline calm.
-- `fogged`:
-  - `deeperShade`: Calmness is present, though not fully settled.
-  - `hiddenPattern`: Reflection favored pause over quick reaction.
+### Example C
+```yaml
+spectrum: Emotional
+symbol: 🌊
+name: Odliv
+todayOneLiner: Dnes energia ostáva bližšie pri sebe a menej smeruje navonok.
+gentleHook: Hlbšia vrstva môže ukázať, čo drží tento pokoj pohromade.
+visibleByDefault: [spectrum, symbol, name, todayOneLiner, gentleHook]
+fogged:
+  - key: deeperShade
+    teaser: Pokoj je prítomný, ešte nie celkom usadený.
+    unlockType: premium
+    revealedText: Pokoj drží deň stabilný, no citlivosť ostáva otvorená.
+  - key: hiddenPattern
+    teaser: Reflexia volila pauzu pred reakciou.
+    unlockType: gold
+    priceGold: 1
+    revealedText: Najsilnejší vzorec dňa je spomalenie pred rozhodnutím.
+unlockRules:
+  gold: { oneOffUnlock: true, affectsTruth: false }
+  premium: { expandsDepthAccess: true, affectsTruth: false }
+```
