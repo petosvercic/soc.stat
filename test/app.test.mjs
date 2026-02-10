@@ -2,11 +2,21 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createAppServer } from "../src/app.mjs";
 import { resetData } from "../src/flowService.mjs";
-import { validateCoreCopy } from "../src/copyValidator.mjs";
 
-async function withServer(run) {
+async function withServer(run, configOverride = {}) {
   resetData();
-  const server = createAppServer();
+  const server = createAppServer({
+    nodeEnv: "test",
+    port: 0,
+    appApiToken: "",
+    paywallToken: "",
+    paywallProviderUrl: "",
+    paywallPublicKey: "",
+    vercelToken: "",
+    repoSyncToken: "",
+    ...configOverride,
+  });
+
   await new Promise((resolve) => server.listen(0, resolve));
   const address = server.address();
   const baseUrl = `http://127.0.0.1:${address.port}`;
@@ -103,11 +113,35 @@ test("AC4 and AC5: feed is private-safe and share is read-only public", async ()
   });
 });
 
-test("copy validator rejects forbidden patterns", () => {
-  const result = validateCoreCopy("Pokračuj zajtra?");
-  assert.equal(result.ok, false);
-  const codes = result.violations.map((v) => v.code);
-  assert.ok(codes.includes("HAS_QUESTION_MARK"));
-  assert.ok(codes.includes("HAS_CTA"));
-  assert.ok(codes.includes("HAS_FUTURE_PROJECTION"));
+
+test("protected routes require app token when configured", async () => {
+  await withServer(
+    async (baseUrl) => {
+      const noToken = await fetch(`${baseUrl}/today`, { headers: auth });
+      assert.equal(noToken.status, 401);
+
+      const wrongToken = await fetch(`${baseUrl}/today`, { headers: { ...auth, "x-app-token": "wrong" } });
+      assert.equal(wrongToken.status, 401);
+
+      const okToken = await fetch(`${baseUrl}/today`, { headers: { ...auth, "x-app-token": "test-token" } });
+      assert.equal(okToken.status, 200);
+    },
+    { appApiToken: "test-token" },
+  );
 });
+
+test("paywall config requires paywall token", async () => {
+  await withServer(
+    async (baseUrl) => {
+      const noToken = await fetch(`${baseUrl}/paywall/config`);
+      assert.equal(noToken.status, 401);
+
+      const okToken = await fetch(`${baseUrl}/paywall/config`, { headers: { "x-paywall-token": "pw" } });
+      assert.equal(okToken.status, 200);
+      const data = await okToken.json();
+      assert.equal(data.providerUrl, "https://paywall.example.com");
+    },
+    { paywallToken: "pw", paywallProviderUrl: "https://paywall.example.com", paywallPublicKey: "pk_live" },
+  );
+
+

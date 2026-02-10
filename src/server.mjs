@@ -1,8 +1,10 @@
+
+import { initConfig } from "./config.mjs";
 import { createAppServer } from "./app.mjs";
 
-const server = createAppServer();
-const port = Number(process.env.PORT ?? 3000);
+const config = initConfig();
+const server = createAppServer(config);
 
-server.listen(port, () => {
-  console.log(`soc.stat app running on :${port}`);
-});
+server.listen(config.port, () => {
+  console.log(`soc.stat app running on :${config.port}`);
+

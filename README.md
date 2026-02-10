@@ -10,6 +10,20 @@ V ďalších fázach budú jeho časti rozdelené do samostatných dokumentov.
 - FOUNDATION sekcie: 3 (Axioms), 5 (Jazyk systému), 6 (Denný tok), 8 (Checklist).
 - Produkčná fáza: 4 (Production).
 
+
+## Nasadenie a secrets konfigurácia
+
+- Aplikácia načíta premenné z `.env.lokal` a `.env.local` (ak existujú) a následne z prostredia.
+- Pre produkciu (`NODE_ENV=production`) sú povinné premenné: `APP_API_TOKEN`, `PAYWALL_TOKEN`, `PAYWALL_PROVIDER_URL`, `PAYWALL_PUBLIC_KEY`.
+- Vzor konfigurácie je v `.env.example`.
+- Súbory s tajomstvami (`.env.lokal`, `.env.local`) sú git-ignorované a nesmú byť commitované.
+- Pre Vercel je pridaný `vercel.json` a serverless entrypoint `api/index.js`.
+- Chránené endpointy vyžadujú hlavičky:
+  - `x-app-token: <APP_API_TOKEN>`
+  - `x-user-id: <user-id>`
+- Paywall konfigurácia endpoint (`GET /paywall/config`) vyžaduje `x-paywall-token`.
+
+
 ## Rozdelené špecifikácie (aktuálny stav)
 
 - `FOUNDATION_NORMALIZED.md` — kanonická normalizovaná textová špecifikácia.
