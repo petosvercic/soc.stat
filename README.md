@@ -5,6 +5,17 @@ Tento dokument je záväzný koncepčný základ projektu soc.stat.
 Všetky budúce rozhodnutia, implementácie a rozšírenia musia byť s ním v súlade.
 V ďalších fázach budú jeho časti rozdelené do samostatných dokumentov.
 
+## Aktuálna implementácia (referencie)
+
+- FOUNDATION sekcie: 3 (Axioms), 5 (Jazyk systému), 6 (Denný tok), 8 (Checklist).
+- Produkčná fáza: 4 (Production).
+
+## Rozdelené špecifikácie (aktuálny stav)
+
+- `FOUNDATION_NORMALIZED.md` — kanonická normalizovaná textová špecifikácia.
+- `SPEC_BUILD.md` — implementačná build špecifikácia.
+- `SPEC_CONTRACTS.ts` — kontrakty, typy a API rozhrania.
+
 1. JEDNOVETNÁ DEFINÍCIA PRODUKTU (AXIOM REALITY)
 
 Soc.stat robí viditeľným aktuálne vnútorné nastavenie človeka a umožňuje naň vedome reagovať vo vzťahoch, bez nutnosti ho slovne vysvetľovať.
@@ -35,7 +46,7 @@ neponúka riešenia
 
 neponúka diagnózy
 
-neponúka nápravu      
+neponúka nápravu
 
 Ponúka pohľad
 a dôveruje, že pohľad je často viac než rada.
