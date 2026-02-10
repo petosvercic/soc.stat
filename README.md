@@ -10,6 +10,7 @@ V ďalších fázach budú jeho časti rozdelené do samostatných dokumentov.
 - FOUNDATION sekcie: 3 (Axioms), 5 (Jazyk systému), 6 (Denný tok), 8 (Checklist).
 - Produkčná fáza: 4 (Production).
 
+
 ## Nasadenie a secrets konfigurácia
 
 - Aplikácia načíta premenné z `.env.lokal` a `.env.local` (ak existujú) a následne z prostredia.
@@ -21,6 +22,7 @@ V ďalších fázach budú jeho časti rozdelené do samostatných dokumentov.
   - `x-app-token: <APP_API_TOKEN>`
   - `x-user-id: <user-id>`
 - Paywall konfigurácia endpoint (`GET /paywall/config`) vyžaduje `x-paywall-token`.
+
 
 ## Rozdelené špecifikácie (aktuálny stav)
 

@@ -16,6 +16,7 @@ async function withServer(run, configOverride = {}) {
     repoSyncToken: "",
     ...configOverride,
   });
+
   await new Promise((resolve) => server.listen(0, resolve));
   const address = server.address();
   const baseUrl = `http://127.0.0.1:${address.port}`;
@@ -112,6 +113,7 @@ test("AC4 and AC5: feed is private-safe and share is read-only public", async ()
   });
 });
 
+
 test("protected routes require app token when configured", async () => {
   await withServer(
     async (baseUrl) => {
@@ -141,4 +143,5 @@ test("paywall config requires paywall token", async () => {
     },
     { paywallToken: "pw", paywallProviderUrl: "https://paywall.example.com", paywallPublicKey: "pk_live" },
   );
-});
+
+

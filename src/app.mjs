@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+
 import {
   FlowState,
   acceptFriendRequest,
@@ -38,9 +39,11 @@ const sendJson = (res, status, body) => {
 };
 
 const sendHtml = (res, status, title, lines = [], controls = []) => {
+
   const body = `<!doctype html><html><body><main><h1>${title}</h1>${lines
     .map((x) => `<p>${x}</p>`)
     .join("")}<nav>${controls.map((x) => `<span>${x}</span>`).join(" ")}</nav></main></body></html>`;
+
   res.writeHead(status, { "content-type": "text/html; charset=utf-8" });
   res.end(body);
 };
@@ -49,6 +52,7 @@ const authUserId = (req) => {
   const userId = req.headers["x-user-id"];
   return typeof userId === "string" && getUser(userId) ? userId : null;
 };
+
 
 const verifyApiToken = (req, config) => {
   if (!config.appApiToken) return true;
@@ -91,6 +95,7 @@ export async function appHandler(req, res, config) {
   }
 
   if (isPublicPath(pathname, req.method)) {
+
     if (pathname === "/") return sendHtml(res, 200, "soc.stat", ["Priestor pre denný tichý stav."], ["Vstúpiť"]);
     if (pathname === "/login") return sendHtml(res, 200, "Prihlásenie");
     if (pathname === "/register") return sendHtml(res, 200, "Registrácia");
@@ -100,6 +105,7 @@ export async function appHandler(req, res, config) {
       if (!share) return sendJson(res, 404, { error: "Not found" });
       return sendHtml(res, 200, `Share ${share.date}`, share.resultLines);
     }
+
   }
 
   if (!verifyApiToken(req, config)) return sendJson(res, 401, { error: "Invalid app token" });
@@ -186,4 +192,5 @@ export async function appHandler(req, res, config) {
 
 export function createAppServer(config) {
   return createServer((req, res) => appHandler(req, res, config));
+
 }
